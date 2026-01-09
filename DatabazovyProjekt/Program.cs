@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using DatabazovyProjekt.DAO;
 using DatabazovyProjekt.Entities;
+using DatabazovyProjekt.DTO;
+
 namespace DatabazovyProjekt
 {
     internal class Program
@@ -20,26 +22,14 @@ namespace DatabazovyProjekt
             var app = builder.Build();
             
             app.MapGet("/", () => "API běží");
-            app.MapPost("/api/pozadavky", (Request p) =>
+            app.MapPost("/api/requests", (CreateRequestDto dto) =>
             {
-
-                if (string.IsNullOrWhiteSpace(p.Jmeno))
-                    return Results.BadRequest("Jméno je povinné");
-
-                if (string.IsNullOrWhiteSpace(p.Email) || !p.Email.Contains("@"))
-                    return Results.BadRequest("Email není platný");
-
-                if (string.IsNullOrWhiteSpace(p.TextZpravy))
-                    return Results.BadRequest("Zpráva je povinná");
-
-                p.Id = nextId++;
-                p.Vytvoren = DateTime.Now;
-                p.Stav = State.Novy;
-
-                pozadavky.Add(p);
-                return Results.Created($"/api/pozadavky/{p.Id}", p);
+                APIController.PostRequest(dto);
             });
-
+            app.MapPost("/api/auth/login", (Admin dto) =>
+            {
+                APIController.PostRequest(dto);
+            });
 
             app.MapGet("/api/pozadavky", () =>
             {

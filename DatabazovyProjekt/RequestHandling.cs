@@ -1,6 +1,7 @@
 ﻿using DatabazovyProjekt.DAO;
 using DatabazovyProjekt.Entities;
 using DatabazovyProjekt;
+using System.Data.SqlClient;
 
 public class RequestHandling
 {
@@ -61,27 +62,68 @@ public class RequestHandling
 
         p.Administrator = admin;
         p.RequestProcessing = rp;
-        p.Stav = State.ResiSe;
+        ChangeRequestState(p, State.ResiSe);
     }
 
-    public static void FinishRequest(Request p, string responseText)
+    public static void FinishRequest(int requestId,int adminId,string responseText)
     {
-        if (p.RequestProcessing == null || p.RequestProcessing.Id <= 0)
-            throw new InvalidOperationException("Požadavek není zpracováván");
+        using var conn = DatabaseFactory.CreateConnection();
+        conn.Open();
 
-        if (!ZmenaStavuDto.JePlatnaZmena(p.Stav, State.Uzavreny))
-            throw new InvalidOperationException("Neplatná změna stavu");
+        using var transaction = conn.BeginTransaction();
 
-        new RequestProcessingDAO().Finish(p.RequestProcessing.Id, responseText);
-        ChangeRequestState(p, State.Uzavreny);
+        try
+        {
+            string updateProcessingSql = @"
+            update requestprocessing
+            set ended_date = getdate(),
+                response_text = @response
+            where request_id = @requestId
+              and admin_id = @adminId
+              and ended_date is null;
+        ";
+
+            using (var cmd = new SqlCommand(updateProcessingSql, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@requestId", requestId);
+                cmd.Parameters.AddWithValue("@adminId", adminId);
+                cmd.Parameters.AddWithValue("@response", responseText);
+
+                int affected = cmd.ExecuteNonQuery();
+                if (affected == 0)
+                    throw new InvalidOperationException("Požadavek není přiřazen tomuto adminovi.");
+            }
+
+            string updateRequestSql = @"
+            update servicerequest
+            set status_id = @statusId
+            where id = @requestId;
+        ";
+
+            using (var cmd = new SqlCommand(updateRequestSql, conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("@requestId", requestId);
+                cmd.Parameters.AddWithValue("@statusId", (int)State.Uzavreny);
+
+                cmd.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
+
 
     public static void CancelRequest(Request p)
     {
         if (p.Stav == State.Uzavreny)
             throw new InvalidOperationException("Uzavřený požadavek nelze stornovat");
 
-        ChangeRequestState(p, State.Stornovany);
+        ChangeRequestState(p, State.Storno);
     }
     public static void ChangeRequestState(Request p, State newState)
     {

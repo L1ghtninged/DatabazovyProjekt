@@ -24,7 +24,7 @@ namespace DatabazovyProjekt
         Novy = 1,
         ResiSe = 2,
         Uzavreny = 3,
-        Stornovany = 4
+        Storno = 4
     }
     public class ZmenaStavuDto
     {

@@ -11,6 +11,7 @@ namespace DatabazovyProjekt.DAO
             conn.Open();
             string sql = @"
                 insert into servicerequest (contact_id, status_id, request_text)
+                output inserted.id
                 values (@contact_id, @status_id, @request_text);
             ";
             using var cmd = new SqlCommand(sql, conn);

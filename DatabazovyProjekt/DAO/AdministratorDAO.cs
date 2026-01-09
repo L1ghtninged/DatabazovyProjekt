@@ -11,10 +11,10 @@ namespace DatabazovyProjekt.DAO
             conn.Open();
 
             string sql = @"
-        insert into administrator (first_name, last_name, email)
-        output inserted.id
-        values (@first_name, @last_name, @email);
-    ";
+                insert into administrator (first_name, last_name, email)
+                output inserted.id
+                values (@first_name, @last_name, @email);
+            ";
 
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@first_name", administrator.FirstName);

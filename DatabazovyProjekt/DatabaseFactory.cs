@@ -18,17 +18,27 @@ public static class DatabaseFactory
 
         var builder = new SqlConnectionStringBuilder
         {
-            UserID = db["User"],
-            Password = db["Password"],
-            InitialCatalog = db["Name"],
             DataSource = db["DataSource"],
+            InitialCatalog = db["Name"],
             TrustServerCertificate = true,
-            ConnectTimeout = 30,
-            IntegratedSecurity = false
+            ConnectTimeout = 30
         };
 
+        // Rozhodnutí podle configu
+        bool useWindowsAuth = bool.Parse(db["IntegratedSecurity"] ?? "true");
+
+        if (useWindowsAuth)
+        {
+            builder.IntegratedSecurity = true;
+        }
+        else
+        {
+            builder.UserID = db["User"];
+            builder.Password = db["Password"];
+            builder.IntegratedSecurity = false;
+        }
+
         connectionString = builder.ConnectionString;
-        
     }
 
     public static SqlConnection CreateConnection()
