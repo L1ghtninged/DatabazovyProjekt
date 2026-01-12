@@ -32,7 +32,6 @@ Projekt je vytvořen jako **školní projekt** a slouží k demonstraci práce s
 git clone [repository-url]
 cd backend
 dotnet restore
-dotnet ef database update
 dotnet build
 dotnet run
 ```
