@@ -41,7 +41,7 @@ Upravte soubor appsettings.json a vyplňte údaje o databázi.
 
 ### Popis polí
 
-* `DataSource` – adresa SQL Serveru (Pro Windows autentizaci nechte .\\SQLEXPRESS)
+* `DataSource` – adresa SQL Serveru (Pro Windows autentizaci nechte .\\\SQLEXPRESS)
 * `Name` – název databáze
 * `User`, `Password` – vyplnit pouze při SQL autentizaci
 
@@ -60,7 +60,6 @@ Poté aplikace při běhu pracuje s existující strukturou tabulek.
 Otevřte příkazový řádek a dostaňte se do složky se C# projektem(/DatabazovyProjekt)
 
 ```bash
-cd backend
 dotnet restore
 dotnet build
 dotnet run
