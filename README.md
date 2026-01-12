@@ -10,7 +10,7 @@ Aplikace umožňuje:
 
 * zákazníkovi vyplnit formulář a odeslat požadavek na vytvoření AI agenta,
 * administrátorovi převzít požadavek, zpracovat jej nebo stornovat,
-* import a export dat z/do databáze,
+* import dat do databáze,
 * správu celého procesu pomocí stavů a transakcí.
 
 Projekt je vytvořen jako **školní projekt** a slouží k demonstraci práce s databází, REST API a jednoduchým frontendem.
@@ -25,34 +25,9 @@ Projekt je vytvořen jako **školní projekt** a slouží k demonstraci práce s
 * .NET SDK 7.0+
 * Microsoft SQL Server (LocalDB, Express, školní server)
 * Git
-
-### Postup spuštění backendu
-
-```bash
-git clone [repository-url]
-cd backend
-dotnet restore
-dotnet build
-dotnet run
-```
-
-Po úspěšném spuštění běží REST API standardně na adrese:
-
-```
-http://localhost:8080
-```
-
-### Spuštění frontendu
-
-Frontend je čistý HTML/CSS/JavaScript a **není potřeba build**:
-
-* otevřete `index.html` v prohlížeči
-* nebo použijte jednoduchý server (např. Live Server ve VS Code)
-
----
-
+  
 ## Konfigurace databáze (`appsettings.json`)
-
+Upravte soubor appsettings.json a vyplňte údaje o databázi.
 ```json
 {
   "Database": {
@@ -81,6 +56,28 @@ CREATE DATABASE databaze;
 ```
 
 Poté aplikace při běhu pracuje s existující strukturou tabulek.
+### Postup spuštění backendu
+Otevřte příkazový řádek a dostaňte se do složky s projektem.
+```bash
+git clone [repository-url]
+cd backend
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Po úspěšném spuštění běží REST API standardně na adrese:
+
+```
+http://localhost:8080
+```
+
+### Spuštění frontendu
+
+Frontend je čistý HTML/CSS/JavaScript a **není potřeba build**:
+
+* otevřete `index.html` v prohlížeči
+* nebo použijte jednoduchý server (např. Live Server ve VS Code)
 
 ---
 
@@ -137,10 +134,9 @@ Admin,Test,admin@email.cz
    * admin může požadavek zrušit
    * změna stavu na `Storno`
 
-5. **Import / Export databáze**
+5. **Import CSV**
 
    * CSV import přes frontend
-   * SQL export databáze
 
 ---
 
