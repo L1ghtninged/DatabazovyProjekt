@@ -18,7 +18,7 @@ Projekt je vytvořen jako **školní projekt** a slouží k demonstraci práce s
 ---
 
 ## Rychlé spuštění
-
+Stáhněte projekt z Githubu
 ### Požadavky
 
 * Windows / Linux / macOS
@@ -57,9 +57,9 @@ CREATE DATABASE databaze;
 
 Poté aplikace při běhu pracuje s existující strukturou tabulek.
 ### Postup spuštění backendu
-Otevřte příkazový řádek a dostaňte se do složky s projektem.
+Otevřte příkazový řádek a dostaňte se do složky se C# projektem(/DatabazovyProjekt)
+
 ```bash
-git clone [repository-url]
 cd backend
 dotnet restore
 dotnet build
