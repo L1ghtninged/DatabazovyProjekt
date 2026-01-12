@@ -1,0 +1,218 @@
+/* ===== CUSTOMER FORM SIMPLE STYLES ===== */
+:root {
+    --customer-primary: #2196F3;
+    --customer-primary-dark: #0b7dda;
+    --customer-secondary: #4CAF50;
+    --customer-bg: #f5f7fa;
+    --customer-text: #333;
+    --customer-border: #dee2e6;
+    --customer-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body.customer-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.customer-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ===== HEADER ===== */
+.customer-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.customer-header h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.customer-header h1::before {
+    font-size: 32px;
+}
+
+.customer-header p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ===== FORM CONTAINER ===== */
+.customer-form-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: var(--customer-shadow);
+    border: 1px solid var(--customer-border);
+}
+
+/* ===== FORM ===== */
+#requestForm {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+}
+
+/* ===== INPUTS ===== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+}
+
+.form-group label span {
+    color: #f44336;
+    margin-left: 2px;
+}
+
+input, textarea {
+    padding: 14px;
+    border: 2px solid var(--customer-border);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #f8f9fa;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--customer-primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+/* ===== BUTTON ===== */
+.submit-button {
+    background: linear-gradient(135deg, var(--customer-primary), var(--customer-primary-dark));
+    color: white;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-button:hover {
+    background: linear-gradient(135deg, var(--customer-primary-dark), #0a6ec4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+.submit-button .icon {
+    font-size: 18px;
+}
+
+.submit-button.loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* ===== RESULT MESSAGE ===== */
+#result {
+    margin-top: 25px;
+    padding: 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+    display: none;
+}
+
+#result.success {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #4CAF50;
+    display: block;
+}
+
+#result.error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #f44336;
+    display: block;
+}
+
+/* ===== FOOTER ===== */
+.customer-footer {
+    margin-top: 40px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--customer-border);
+}
+
+.customer-footer p {
+    margin: 8px 0;
+}
+
+.customer-footer a {
+    color: var(--customer-primary);
+    text-decoration: none;
+}
+
+.customer-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

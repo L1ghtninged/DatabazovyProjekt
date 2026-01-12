@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrace admina</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .register-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .register-form h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .register-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .register-form button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .register-form button:hover {
+            background: #45a049;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        #error {
+            color: #f44336;
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 4px;
+        }
+        
+        #success {
+            color: #4CAF50;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-form">
+        <h1>Registrace admina</h1>
+        
+        <form id="registerForm">
+            <input type="text" id="firstName" placeholder="Jméno" required>
+            <input type="text" id="lastName" placeholder="Příjmení" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <button type="submit">Zaregistrovat se</button>
+        </form>
+        
+        <div id="error"></div>
+        <div id="success"></div>
+        
+        <div class="login-link">
+            Již máte účet? <a href="index.html">Přihlaste se zde</a>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            document.getElementById("error").innerHTML = "";
+            document.getElementById("success").innerHTML = "";
+            
+            const firstName = document.getElementById("firstName").value;
+            const lastName = document.getElementById("lastName").value;
+            const email = document.getElementById("email").value;
+            
+            if (!firstName || !lastName || !email) {
+                document.getElementById("error").innerHTML = "Všechna pole jsou povinná";
+                return;
+            }
+            
+            try {
+                const result = await apiRequest("/admin/register", "POST", {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email
+                });
+                
+                document.getElementById("success").innerHTML = `
+                    <p>Registrace úspěšná!</p>
+                    <p>Admin: ${result.fullName}</p>
+                    <p>Email: ${result.email}</p>
+                    <p>ID: ${result.id}</p>
+                    <button onclick="loginAfterRegister('${email}')">Přihlásit se</button>
+                `;
+                
+                document.getElementById("registerForm").reset();
+                
+            } catch (err) {
+                document.getElementById("error").innerHTML = "Chybný formát";
+            }
+        });
+        
+        async function loginAfterRegister(email) {
+            try {
+                const admin = await apiRequest("/admin/login", "POST", { email });
+                
+                localStorage.setItem("admin", JSON.stringify(admin));
+                
+                window.location.href = "dashboard.html";
+                
+            } catch (err) {
+                document.getElementById("error").innerHTML = "Chybný formát";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+﻿curl -X POST http://localhost:8080/api/requests -H "Content-Type: application/json" -d "{\"firstName\":\"Jan\",\"lastName\":\"Novak\",\"email\":\"jan@novak.cz\",\"message\":\"Test požadavek\"}"
+curl -X POST http://localhost:8080/api/admin/register -H "Content-Type: application/json" -d "{\"firstName\":\"Jan\",\"lastName\":\"Novak\",\"email\":\"jan@firma.cz\"}"
+curl -X POST http://localhost:8080/api/admin/login -H "Content-Type: application/json" -d "{\"email\":\"jan@firma.cz\"}"
+curl http://localhost:8080/api/admin/1/requests
+curl -X POST http://localhost:8080/api/requests/1/finish -H "Content-Type: application/json" -d "{\"adminId\":1,\"responseText\":\"Váš požadavek byl úspěšně vyřešen.\"}"
+curl -X POST http://localhost:8080/api/requests/1/cancel -H "Content-Type: application/json" -d "{\"adminId\":1}"
+curl -X PUT http://localhost:8080/api/admin/1 -H "Content-Type: application/json" -d "{\"firstName\":\"Jan\",\"lastName\":\"Novak\",\"email\":\"jan.novak@firma.cz\",\"releaseActiveRequests\":true}"

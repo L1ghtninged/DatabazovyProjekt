@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Agent System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        .buttons {
+            margin: 40px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-admin {
+            background: #28a745;
+        }
+        
+        .btn-customer {
+            background: #007bff;
+        }
+        
+        .btn-import {
+            background: #6c757d;
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            background: #28a745;
+        }
+        
+        .notification.error {
+            background: #dc3545;
+        }
+        
+        .notification.info {
+            background: #17a2b8;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Agent System</h1>
+    <p>Výběr režimu:</p>
+    
+    <div class="buttons">
+        <a href="admin/index.html" class="btn btn-admin">Admin Panel</a>
+        <a href="customer/index.html" class="btn btn-customer">Customer Portal</a>
+        <button onclick="showImport()" class="btn btn-import">Import Data</button>
+    </div>
+    
+    <div id="importModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 900; display: flex; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.2); min-width: 400px; max-width: 500px;">
+            <h3 style="margin-top: 0;">Import Data</h3>
+            
+            <div style="text-align: left; margin: 20px 0;">
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Vyberte tabulku:</label>
+                <select id="tableSelect" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px;">
+                    <option value="">-- Vyberte --</option>
+                    <option value="Contact">Contact</option>
+                    <option value="Administrator">Administrator</option>
+                </select>
+                
+                <label style="display: block; margin-bottom: 8px; font-weight: bold;">Vyberte soubor:</label>
+                <input type="file" id="csvFile" accept=".csv" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                
+                <div style="margin: 15px 0;">
+                    <label>
+                        <input type="checkbox" id="hasHeader" checked> 
+                        Soubor obsahuje hlavičku (první řádek)
+                    </label>
+                </div>
+                
+                <div style="font-size: 14px; color: #666; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; border: 1px solid #eee;">
+                    <strong>Formát CSV (oddělovač čárka):</strong><br>
+                    • <strong>Contact:</strong> jméno,příjmení,email<br>
+                    • <strong>Administrator:</strong> jméno,příjmení,email
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="hideImport()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Zavřít</button>
+                <button onclick="uploadFile()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Importovat</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notificationContainer"></div>
+    
+    <script>
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+        
+        function showImport() {
+            document.getElementById('importModal').style.display = 'flex';
+        }
+        
+        function hideImport() {
+            document.getElementById('importModal').style.display = 'none';
+            document.getElementById('csvFile').value = '';
+            document.getElementById('tableSelect').selectedIndex = 0;
+        }
+        
+        async function uploadFile() {
+            const fileInput = document.getElementById('csvFile');
+            const tableSelect = document.getElementById('tableSelect');
+            const hasHeader = document.getElementById('hasHeader').checked;
+
+            if (!fileInput.files[0]) {
+                showNotification('Vyberte CSV soubor', 'error');
+                return;
+            }
+            
+            if (!tableSelect.value) {
+                showNotification('Vyberte cílovou tabulku', 'error');
+                return;
+            }
+            
+            const fileName = fileInput.files[0].name.toLowerCase();
+            if (!fileName.endsWith('.csv')) {
+                showNotification('Soubor musí být ve formátu CSV', 'error');
+                return;
+            }
+            
+            if (fileInput.files[0].size > 5 * 1024 * 1024) {
+                showNotification('Soubor je příliš velký (max 5MB)', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('table', tableSelect.value);
+            formData.append('hasHeader', hasHeader);
+            
+            showNotification('Probíhá import...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/import', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showNotification(`Import úspěšný (${result.rows || 0} záznamů)`, 'success');
+                    hideImport();
+                } else {
+                    showNotification('Import selhal - chybný formát souboru', 'error');
+                }
+            } catch (error) {
+                showNotification('Nelze se připojit k serveru', 'error');
+            }
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('importModal');
+            if (event.target === modal) {
+                hideImport();
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideImport();
+            }
+        });
+    </script>
+</body>
+</html>
